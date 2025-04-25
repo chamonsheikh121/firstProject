@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { StudentServices } from './student.service';
+// import { Error } from 'mongoose';
 
 const createStudent = async (req: Request, res: Response) => {
   try {
@@ -13,7 +14,10 @@ const createStudent = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    res.status(400).json({
+      success: false,
+      message: error,
+    });
   }
 };
 
@@ -40,7 +44,7 @@ const getStudent = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    console.log('I am from controller', error);
   }
 };
 

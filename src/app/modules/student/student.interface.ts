@@ -16,14 +16,16 @@ export type LocalGurdian = {
   address: string;
 };
 
+export type UserName = {
+  firstName: string;
+  middleName: string;
+  lastName: string;
+};
+
 export type Student = {
   id: string;
-  name: {
-    firstName: string;
-    middleName: string;
-    lastName: string;
-  };
-  gender: 'male' | 'female';
+  name: UserName;
+  gender: 'male' | 'female' | 'others';
   email: string;
   dateOfBirth?: string;
   contactNo: string;
