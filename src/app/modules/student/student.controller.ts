@@ -1,22 +1,41 @@
 import { Request, Response } from 'express';
 import { StudentServices } from './student.service';
 // import { Error } from 'mongoose';
+import studentValidationSchema from './student.validation';
 
 const createStudent = async (req: Request, res: Response) => {
   try {
     const { student: NewStudentData } = req.body;
-    console.log('data getting', NewStudentData);
 
-    const result = await StudentServices.createStudentIntoDb(NewStudentData);
+    // const { error, value} = studentValidationSchema.validate(NewStudentData);
+
+    // creating student validation using zod
+
+    const zodParsedData = studentValidationSchema.parse(NewStudentData);
+
+    console.log('I am from controller', zodParsedData);
+
+    const result = await StudentServices.createStudentIntoDb(zodParsedData);
+    console.log('this is chamon ali ama', result);
+
+    // if (error) {
+    //   res.status(500).json({
+    //     success: false,
+    //     message: 'something went wrong',
+    //     error: error.details,
+    //   });
+    //   return
+    // }
+
     res.status(200).json({
       status: 'success',
       message: 'Student created successfully',
       data: result,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(400).json({
       success: false,
-      message: error,
+      message: error.message || 'somehting went wrong',
     });
   }
 };

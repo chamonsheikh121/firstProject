@@ -1,6 +1,6 @@
-// import { Schema, model, connect } from 'mongoose';
+import { Model } from 'mongoose';
 
-export type Gurdian = {
+export type TGurdian = {
   fatherName: string;
   fatherOccupation: string;
   fatherContactNo: string;
@@ -9,33 +9,41 @@ export type Gurdian = {
   motherContactNo: string;
 };
 
-export type LocalGurdian = {
+export type TLocalGurdian = {
   name: string;
   occupation: string;
   contactNo: string;
   address: string;
 };
 
-export type UserName = {
+export type TUserName = {
   firstName: string;
-  middleName: string;
+  middleName?: string; // optional
   lastName: string;
 };
 
-export type Student = {
+export type TStudent = {
   id: string;
-  name: UserName;
+  name: TUserName;
   gender: 'male' | 'female' | 'others';
   email: string;
-  dateOfBirth?: string;
+  dateOfBirth?: string; // optional
   contactNo: string;
   emergencyContactNo: string;
   presentAddress: string;
-
   parmanentAddress: string;
-  bloodGroup?: 'A+' | 'A' | 'B+' | 'B-' | 'O+' | 'O-' | 'AB+' | 'AB-';
-  gurdian: Gurdian;
-  localGurdian: LocalGurdian;
-  profileImage?: string;
-  isActive: 'active' | 'inactive';
+  bloodGroup?: 'A+' | 'A' | 'B+' | 'B-' | 'O+' | 'O-' | 'AB+' | 'AB-'; // optional
+  gurdian: TGurdian;
+  localGurdian: TLocalGurdian;
+  profileImage?: string; // optional
+  isActive?: 'active' | 'blocked'; // optional (has default in zod)
 };
+
+export type TStudentMethood = {
+  isIdExists(id: string): Promise<TStudent | null>;
+};
+
+export interface TStudentModel
+  extends Model<TStudent, Record<string, never>, TStudentMethood> {
+  isEmailExists(email: string): Promise<TStudent | null>;
+}
