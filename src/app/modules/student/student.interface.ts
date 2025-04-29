@@ -24,6 +24,7 @@ export type TUserName = {
 
 export type TStudent = {
   id: string;
+  password: string;
   name: TUserName;
   gender: 'male' | 'female' | 'others';
   email: string;
@@ -36,14 +37,17 @@ export type TStudent = {
   gurdian: TGurdian;
   localGurdian: TLocalGurdian;
   profileImage?: string; // optional
-  isActive?: 'active' | 'blocked'; // optional (has default in zod)
+  isActive?: 'active' | 'blocked'; // optional (has default in zod);
+  isDeleted?: boolean;
 };
 
 export type TStudentMethood = {
+  // eslint-disable-next-line no-unused-vars
   isIdExists(id: string): Promise<TStudent | null>;
 };
 
 export interface TStudentModel
   extends Model<TStudent, Record<string, never>, TStudentMethood> {
+  // eslint-disable-next-line no-unused-vars
   isEmailExists(email: string): Promise<TStudent | null>;
 }

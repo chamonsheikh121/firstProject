@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { join } from 'path';
 
 //creating a schema validation using Joi
 
@@ -32,6 +33,7 @@ const localGuardianValidationSchema = Joi.object({
 // Main Student schema
 const studentValidationSchema = Joi.object({
   id: Joi.string().required(),
+  password:Joi.string,
   name: userNameValidationSchema.required(),
   gender: Joi.string().valid('male', 'female', 'others').required(),
   email: Joi.string()

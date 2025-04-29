@@ -6,6 +6,8 @@ import {
   TStudentModel,
   TUserName,
 } from './student.interface';
+import bcrypt from 'bcrypt';
+import config from '../../config';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: String,
@@ -31,6 +33,7 @@ const localGurdianSchema = new Schema({
 
 const studentSchema = new Schema<TStudent, TStudentModel, TStudentMethood>({
   id: String,
+  password: String,
   name: userNameSchema,
   gender: String,
   email: String,
@@ -47,6 +50,10 @@ const studentSchema = new Schema<TStudent, TStudentModel, TStudentMethood>({
     type: String,
     default: 'active',
   },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 studentSchema.methods.isIdExists = async function (id: string) {
@@ -58,5 +65,27 @@ studentSchema.statics.isEmailExists = async function (email: string) {
   const isEmailExist = await Student.findOne({ email });
   return isEmailExist;
 };
+
+studentSchema.pre('save', async function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+
+  user.password = await bcrypt.hash(user.password, Number(config.saltRound));
+
+  next();
+});
+studentSchema.post('save', function (doc, next) {
+  doc.password = '';
+  next();
+});
+
+studentSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+studentSchema.pre('aggregate', function (next) {
+  console.log(this.pipeline().unshift({$match :{ isDeleted: {$ne: true}}}))
+  next();
+});
 
 export const Student = model<TStudent, TStudentModel>('Student', studentSchema);
